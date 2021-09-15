@@ -30,6 +30,9 @@
     "@typescript-eslint",
     "prettier"
   ],
+  "prettier/prettier": ["error", {
+   "endOfLine":"auto"
+ }],
   "rules": {
     "camelcase": "off",
     "import/no-duplicates": "off",
