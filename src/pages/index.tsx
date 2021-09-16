@@ -35,8 +35,6 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination } : HomeProps) {
-  console.log(postsPagination.results[0].first_publication_date)
-
   const [allPosts, setAllPosts] = useState<Post[]>(postsPagination.results)
   const [nextPage, setNextPage] = useState<string | false>(postsPagination.next_page)
 

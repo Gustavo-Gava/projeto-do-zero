@@ -3,14 +3,16 @@ import { ptBR } from 'date-fns/locale';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
 import Header from '../../components/Header'
-import { FiCalendar, FiUser} from 'react-icons/fi'
+import { FiCalendar, FiUser, FiClock} from 'react-icons/fi'
 
 import { RichText,  } from 'prismic-dom'
+import Prismic from '@prismicio/client'
 import { getPrismicClient } from '../../services/prismic';
 
 import styles from './post.module.scss';
 import commonStyles from '../../styles/common.module.scss';
 import {useRouter} from 'next/router';
+import { useEffect, useState } from 'react';
 
 interface Post {
   first_publication_date: string | null;
@@ -22,7 +24,9 @@ interface Post {
     author: string;
     content: {
       heading: string;
-      body: string
+      body: {
+        text: string;
+      }[];
     }[];
   };
 }
@@ -39,7 +43,7 @@ interface Section {
 }
 
 export default function Post({ post }: PostProps) {
-  console.log(post)
+  const [timeRead, setTimeRead] = useState(0)
 
   const router = useRouter()
 
@@ -47,12 +51,25 @@ export default function Post({ post }: PostProps) {
     return <div>Carregando...</div>
   }
 
+  useEffect(() => {
+    const textHeading = post.data.content.map(item => item.heading)
+    const textBody = post.data.content.map(item => RichText.asText(item.body))
+    
+    const wordsArray = [...textBody, ...textHeading]
+
+    const allWords = wordsArray.reduce((total, array) => total + array).split(" ")
+
+    const timeRead = Math.ceil(allWords.length / 200)
+
+    setTimeRead(timeRead)
+  }, [])
+
   return (
     <div className={styles.container}>
       <Header />
 
       <div className={styles.banner}>
-        <img src='/banner.png' alt="banner" />
+        <img src={post.data.banner.url} alt="banner" />
       </div>
 
       <div className={styles['container-text']}>
@@ -72,9 +89,10 @@ export default function Post({ post }: PostProps) {
               }
             )}
           </span>
-          {/* <span>
-            {post.data.content.reduce((total, text) => RichText.asText(item.body))}
-          </span> */}
+          <span>
+            <FiClock />
+            {timeRead} min
+          </span>
         </div>
 
         {post.data.content.map(content => (
@@ -82,9 +100,8 @@ export default function Post({ post }: PostProps) {
             <h2>{content.heading}</h2>
 
             <p
-              dangerouslySetInnerHTML={{__html: content.body}}
+            dangerouslySetInnerHTML={{__html: RichText.asHtml(content.body.map(item => item))}}
             >
-              
             </p>
           </div>
         ))}
@@ -94,27 +111,13 @@ export default function Post({ post }: PostProps) {
   )
 }
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
-
-//   // TODO
-// };
-
-// export const getStaticProps = async context => {
-//   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
-
-//   // TODO
-// };
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug } = params
   
   const prismic = getPrismicClient();
   const response = await prismic.getByUID('posts', String(slug), {});
 
-  console.log(JSON.stringify(response, null, 2))
+  // console.log(JSON.stringify(response, null, 2))
 
   const post = {
     first_publication_date: response.first_publication_date,
@@ -127,7 +130,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       content: response.data.content.map((section: Section) => {
           return {
             heading: section.heading,
-            body: RichText.asHtml(section.body)
+            body: section.body.map(text => text)
           }
         })
     }
@@ -143,9 +146,30 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 }
 
-export const getStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const prismic = getPrismicClient();
+  const posts = await prismic.query(
+    Prismic.Predicates.at('document.type', 'posts'),
+    {
+      orderings: '[document.first_publication_date]',
+      pageSize: 3,
+    }
+  );
+
+  const slugs = posts.results.reduce((arr, post) => {
+    arr.push(post.uid);
+
+    return arr;
+  }, []);
+
+  const params = slugs.map(slug => {
+    return {
+      params: { slug },
+    };
+  });
+
   return {
-    paths: [],
-    fallback: true
-  }
-}
+    paths: params,
+    fallback: true,
+  };
+};
