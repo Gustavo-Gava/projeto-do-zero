@@ -15,6 +15,12 @@
     max-width: 700px;
     margin: 5rem auto;
 
+    .section {
+      & + .section {
+        margin-top: 4rem;
+      }
+    }
+
     h1 {
       font-size: 3rem;
       line-height: 3.625rem;
@@ -43,4 +49,8 @@
       
     }
   }
+}
+
+.loading {
+  color: red;
 }

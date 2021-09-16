@@ -40,7 +40,7 @@ export default function Post({ post }: PostProps) {
   const router = useRouter()
 
   if (router.isFallback) {
-    return <div>Carregando...</div>
+    return <div className={styles.loading}>Carregando...</div>
   }
 
   useEffect(() => {

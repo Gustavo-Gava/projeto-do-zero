@@ -138,13 +138,16 @@ export const getStaticPaths = () => {
   }
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ preview = false, previewData }) => {
+  console.log(previewData)
+
   const prismic = getPrismicClient();
   const postsResponse = await prismic.query([
     Prismic.Predicates.at('document.type', 'posts')],
     {
       fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
-      pageSize: 1
+      pageSize: 1,
+      ref: previewData?.ref ?? null
     }
   ); 
 
