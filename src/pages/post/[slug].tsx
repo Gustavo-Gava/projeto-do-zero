@@ -10,7 +10,6 @@ import Prismic from '@prismicio/client'
 import { getPrismicClient } from '../../services/prismic';
 
 import styles from './post.module.scss';
-import commonStyles from '../../styles/common.module.scss';
 import {useRouter} from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -35,13 +34,6 @@ interface PostProps {
   post: Post;
 }
 
-interface Section {
-  heading: string,
-  body: {
-    text: string
-  }[]
-}
-
 export default function Post({ post }: PostProps) {
   const [timeRead, setTimeRead] = useState(0)
 
@@ -62,7 +54,7 @@ export default function Post({ post }: PostProps) {
     const timeRead = Math.ceil(allWords.length / 200)
 
     setTimeRead(timeRead)
-  }, [])
+  }, [post])
 
   return (
     <div className={styles.container}>
@@ -117,30 +109,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const prismic = getPrismicClient();
   const response = await prismic.getByUID('posts', String(slug), {});
 
-  // console.log(JSON.stringify(response, null, 2))
-
-  const post = {
-    first_publication_date: response.first_publication_date,
-    data: {
-      title: response.data.title,
-      author: response.data.author,
-      banner: {
-        url: response.data.banner.url
-      },
-      content: response.data.content.map((section: Section) => {
-          return {
-            heading: section.heading,
-            body: section.body.map(text => text)
-          }
-        })
-    }
-  }
-
-  console.log(JSON.stringify(post.data.content, null, 2))
-
   return {
     props: {
-      post
+      post: response
     },
     revalidate: 60 * 60 // 1 hour
   }
