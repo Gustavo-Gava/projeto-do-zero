@@ -28,15 +28,25 @@
 
     .post-info {
       color: var(--body);
-      margin: 1.625rem 0 4.125rem;
+      margin: 1.25rem 0 4rem;
 
-      display: flex;
       gap: 1.5rem;
+
+      div:first-child {
+        display: flex;
+        gap: 1.5rem;
+      }
 
       span {
         display: flex;
         gap: 0.5rem;
       }
+    }
+
+    .edit-info {
+      margin-left: 0.5rem;
+      color: var(--body);  
+      font-size: 0.8rem;
     }
 
     .section {
@@ -49,6 +59,41 @@
       
     }
   }
+
+  .line {
+    margin: 3rem auto;
+    height: 1px;
+    width: 700px;
+    background-color: var(--body);
+    opacity: 0.1;
+  }
+
+  .container-posts-pagination {
+    max-width: 700px;
+    margin: 0 auto;
+    margin-bottom: 5rem;
+
+    display: flex;
+    justify-content: space-between;
+
+    div {
+      display: flex;
+      flex-direction: column;
+
+      span:first-child {
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+      }
+
+      span:last-child {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--highlight);
+        cursor: pointer;
+      }
+    }
+  }
+
 }
 
 .loading {
