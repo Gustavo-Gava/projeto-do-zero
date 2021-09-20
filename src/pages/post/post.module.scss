@@ -15,6 +15,10 @@
     max-width: 700px;
     margin: 5rem auto;
 
+    a {
+      color: var(--heading);
+    }
+
     .section {
       & + .section {
         margin-top: 4rem;
@@ -71,7 +75,6 @@
   .container-posts-pagination {
     max-width: 700px;
     margin: 0 auto;
-    margin-bottom: 5rem;
 
     display: flex;
     justify-content: space-between;
@@ -94,8 +97,15 @@
     }
   }
 
+  .comments {
+    width: 700px;
+    margin: 1rem auto 5rem;
+  }
+
 }
 
 .loading {
   color: red;
 }
+
+

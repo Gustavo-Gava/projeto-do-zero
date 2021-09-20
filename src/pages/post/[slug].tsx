@@ -1,20 +1,24 @@
-import { format, lastDayOfDecade } from 'date-fns';
+import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
+import { useEffect, useState } from 'react';
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
 import Header from '../../components/Header'
+import Comments from '../../components/Comments/index';
+
 import { FiCalendar, FiUser, FiClock} from 'react-icons/fi'
 
 import { RichText,  } from 'prismic-dom'
 import Prismic from '@prismicio/client'
 import { getPrismicClient } from '../../services/prismic';
 
+
+
 import styles from './post.module.scss';
-import {useRouter} from 'next/router';
-import { useEffect, useState } from 'react';
 
 interface Post {
   first_publication_date: string | null;
@@ -180,7 +184,14 @@ export default function Post({ post, neighborsPosts }: PostProps) {
           ) : ''}
 
         </div>
+        <div className={styles.comments}>
+
+        <Comments />
+        </div>
       </div>
+      
+      
+      
     </>
   )
 }
@@ -225,8 +236,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       }
     : false
   }
-
-  console.log(prevPost)
 
   return {
     props: {
