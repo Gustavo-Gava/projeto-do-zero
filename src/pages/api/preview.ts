@@ -10,8 +10,6 @@ export default async (req, res) => {
     return '/';
   }
 
-  console.log(req.query)
-
   const { token: ref, documentId } = req.query;
   const redirectUrl = await getPrismicClient(req)
     .getPreviewResolver(ref, documentId)

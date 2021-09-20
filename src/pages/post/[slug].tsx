@@ -53,7 +53,6 @@ interface PostProps {
 }
 
 export default function Post({ post, neighborsPosts }: PostProps) {
-  console.log('oi')
   const [ timeRead, setTimeRead ] = useState(0)
   const [ nextPost, setNextPost ] = useState<NeighborPost | false>({title: '', slug: ''})
   const [ prevPost, setPrevPost ] = useState<NeighborPost | false>({title: '', slug: ''})
