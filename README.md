@@ -57,10 +57,9 @@ Foi um projeto desafiador e pude obter muito aprendizado, pois tive que quebrar 
 
 ```
   # Clone esse projeto 
-  $ git clone 'https://github.com/Gustavo-Gava/ignite-rocketshoes/'
+  $ git clone 'https://github.com/Gustavo-Gava/spacetraveling'
   
   # Navegue até a pasta do projeto
-  $ cd ignite-rocketshoes
   
   # Instale as dependências
   $ yarn
